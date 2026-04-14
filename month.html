@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Monthsary!</title>
+    <style>
+        /* General Styling */
+        body {
+            background-color: #ffeef2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: #d63384;
+            overflow: hidden;
+        }
+
+        #landing-page {
+            text-align: center;
+        }
+
+        /* The Button */
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            background-color: #ff758f;
+        }
+
+        /* Hidden Content Section */
+        #content {
+            display: none;
+            text-align: center;
+            animation: fadeIn 2.5s ease-in-out;
+        }
+
+        /* Your Pixel Flower Styling */
+        .pixel-flower {
+            width: 400px; /* Adjust size based on your PNG */
+            height: auto;
+            image-rendering: pixelated; /* Keeps your pixels crisp and sharp */
+            margin: 20px auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page">
+        <h1>I have a surprise for you...</h1>
+        <button onclick="revealSurprise()">Press Me</button>
+    </div>
+
+    <div id="content">
+        <h1>Happy Monthsary My Love! ❤️</h1>
+        
+        <img src="flower.png" alt="Pixel Flower" class="pixel-flower">
+
+        <p>I made this pixel by pixel for you.</p>
+    </div>
+
+    <audio id="bg-music" src="Habang Buhay.mp3" loop></audio>
+
+    <script>
+        function revealSurprise() {
+            const music = document.getElementById('bg-music');
+            
+            // Play the music
+            music.play().catch(error => {
+                console.log("Autoplay was prevented, but since this was a click, it should work!", error);
+            });
+
+            // Swap the screens
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
