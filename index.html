@@ -3,95 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Monthsary!</title>
+    <title>For My Baby ❤️</title>
     <style>
-        /* General Styling */
         body {
-            background-color: #ffeef2;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Courier New', Courier, monospace;
-            color: #d63384;
-            overflow: hidden;
-        }
-
-        #landing-page {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff0f3;
             text-align: center;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
         }
 
-        /* The Button */
+        h1 {
+            color: #ff4d6d;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
         button {
             padding: 15px 30px;
             font-size: 1.2rem;
-            background-color: #ff4d6d;
-            color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-            transition: transform 0.2s, background-color 0.2s;
+            transition: all 0.1s ease-in-out;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        button:hover {
-            transform: scale(1.1);
-            background-color: #ff758f;
+        #yesBtn {
+            background-color: #ff4d6d;
+            color: white;
+            z-index: 1000;
         }
 
-        /* Hidden Content Section */
-        #content {
+        #noBtn {
+            background-color: #adb5bd;
+            color: white;
+        }
+
+        .hidden {
             display: none;
-            text-align: center;
-            animation: fadeIn 2.5s ease-in-out;
         }
 
-        /* Your Pixel Flower Styling */
-        .pixel-flower {
-            width: 400px; /* Adjust size based on your PNG */
-            height: auto;
-            image-rendering: pixelated; /* Keeps your pixels crisp and sharp */
-            margin: 20px auto;
+        .celebration-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .dog-gif {
+            width: 300px;
+            max-width: 85%;
+            border-radius: 20px;
+            margin-bottom: 25px;
+        }
+
+        #celebration-text {
+            color: #c9184a;
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <div id="landing-page">
-        <h1>I have a surprise for you...</h1>
-        <button onclick="revealSurprise()">Press Me</button>
+    <div id="quiz">
+        <h1>Do you love me?</h1>
+        <div class="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
     </div>
 
-    <div id="content">
-        <h1>Happy Monthsary My Love! ❤️</h1>
-        
-        <img src="flower.png" alt="Pixel Flower" class="pixel-flower">
-
-        <p>I made this pixel by pixel for you.</p>
+    <div id="result" class="hidden">
+        <div class="celebration-container">
+            <!-- Updated reliable GIF link -->
+            <img src="https://media.tenor.com/FPvJW5NgP9cAAAAj/happy-cat-cat.gif" alt="Clapping Dog" class="dog-gif">
+            <h1 id="celebration-text">Happy monthsary baby!! ❤️✨</h1>
+        </div>
     </div>
-
-    <audio id="bg-music" src="Habang Buhay.mp3" loop></audio>
 
     <script>
-        function revealSurprise() {
-            const music = document.getElementById('bg-music');
-            
-            // Play the music
-            music.play().catch(error => {
-                console.log("Autoplay was prevented, but since this was a click, it should work!", error);
-            });
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const quiz = document.getElementById('quiz');
+        const result = document.getElementById('result');
 
-            // Swap the screens
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
-        }
+        let yesSize = 1.2; 
+        let paddingY = 15;
+        let paddingX = 30;
+
+        const phrases = [
+            "Are you sure?", "Really?", "Think again!", 
+            "Pwease? 🥺", "Wrong button! ❌", "Look at the big red one!"
+        ];
+
+        noBtn.addEventListener('click', () => {
+            yesSize += 0.6;
+            paddingY += 15;
+            paddingX += 30;
+
+            yesBtn.style.fontSize = yesSize + "rem";
+            yesBtn.style.padding = `${paddingY}px ${paddingX}px`;
+
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            noBtn.innerText = randomPhrase;
+            
+            noBtn.style.transform = `scale(${Math.max(0.5, 1 - (yesSize/10))})`;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            quiz.classList.add('hidden');
+            result.classList.remove('hidden');
+            document.body.style.backgroundColor = "#ffb3c1";
+        });
     </script>
 </body>
 </html>
