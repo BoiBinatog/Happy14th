@@ -1,143 +1,623 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Baby ❤️</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff0f3;
-            text-align: center;
-            overflow: hidden;
-            transition: background-color 0.5s ease;
-        }
-
-        h1 {
-            color: #ff4d6d;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            padding: 0 20px;
-        }
-
-        .buttons {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.1s ease-in-out;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-            z-index: 1000;
-        }
-
-        #noBtn {
-            background-color: #adb5bd;
-            color: white;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .celebration-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .dog-gif {
-            width: 300px;
-            max-width: 85%;
-            border-radius: 20px;
-            margin-bottom: 25px;
-        }
-
-        #celebration-text {
-            color: #c9184a;
-            font-size: 2.5rem;
-            margin: 0;
-        }
-
-        @keyframes pop {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💕 Dino Love Run</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap');
+  :root {
+    --pink-light:#FFE4EC; --pink-mid:#FFB6C1;
+    --pink-hot:#FF69B4;   --pink-deep:#E75480;
+    --text-dark:#6B2D4E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:linear-gradient(160deg,#FFE4EC 0%,#FFF0F5 50%,#FFE4F0 100%);
+    font-family:'Nunito',sans-serif;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    min-height:100vh;overflow:hidden;
+  }
+  #title-screen{text-align:center;animation:fadeIn 0.8s ease;}
+  #title-screen h1{
+    font-family:'Press Start 2P',monospace;font-size:1.4rem;
+    color:var(--pink-deep);text-shadow:3px 3px 0 #FFB6C1;
+    margin-bottom:8px;line-height:1.8;
+  }
+  #title-screen p{color:var(--text-dark);font-size:1rem;margin-bottom:28px;opacity:0.8;}
+  #start-btn{
+    font-family:'Press Start 2P',monospace;font-size:0.75rem;
+    background:linear-gradient(135deg,var(--pink-hot),var(--pink-deep));
+    color:white;border:none;padding:14px 28px;border-radius:50px;
+    cursor:pointer;box-shadow:0 4px 15px rgba(231,84,128,0.4);
+    animation:pulse 1.4s ease-in-out infinite;
+  }
+  #start-btn:hover{transform:scale(1.05);}
+  #game-wrapper{
+    display:none;flex-direction:column;align-items:center;
+    width:100%;max-width:820px;padding:10px 16px;
+  }
+  #hud{display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:10px;}
+  #score-display{
+    font-family:'Press Start 2P',monospace;font-size:0.85rem;
+    color:var(--pink-deep);text-shadow:1px 1px 0 #FFB6C1;
+  }
+  #encourage-box{
+    font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem;
+    color:var(--pink-deep);background:rgba(255,182,193,0.35);
+    border:2px solid var(--pink-mid);border-radius:20px;
+    padding:4px 14px;min-width:200px;text-align:center;transition:opacity 0.4s;
+  }
+  #game-canvas{
+    border:3px solid var(--pink-hot);border-radius:14px;background:#FFF8FB;
+    box-shadow:0 0 30px rgba(255,105,180,0.25);image-rendering:pixelated;display:block;
+  }
+  #progress-wrap{
+    width:100%;height:8px;background:rgba(255,182,193,0.35);
+    border-radius:99px;margin-top:10px;overflow:hidden;border:1px solid var(--pink-mid);
+  }
+  #progress-fill{
+    height:100%;width:0%;
+    background:linear-gradient(90deg,var(--pink-hot),var(--pink-deep));
+    border-radius:99px;transition:width 0.3s linear;
+  }
+  #hint-text{font-size:0.72rem;color:var(--text-dark);opacity:0.65;margin-top:7px;font-style:italic;}
+  #win-screen{
+    display:none;flex-direction:column;align-items:center;text-align:center;
+    animation:fadeIn 0.8s ease;padding:20px;max-width:500px;
+  }
+  #win-date{
+    font-family:'Press Start 2P',monospace;font-size:2.6rem;
+    color:var(--pink-deep);text-shadow:4px 4px 0 #FFB6C1;
+    margin-bottom:16px;line-height:1.5;
+  }
+  #win-msg{font-size:1.4rem;font-weight:900;color:var(--text-dark);margin-bottom:24px;line-height:1.6;}
+  .win-btn{
+    font-family:'Press Start 2P',monospace;font-size:0.65rem;
+    background:linear-gradient(135deg,var(--pink-hot),var(--pink-deep));
+    color:white;border:none;padding:12px 22px;border-radius:50px;
+    cursor:pointer;box-shadow:0 4px 15px rgba(231,84,128,0.4);margin-top:8px;line-height:1.8;
+  }
+  .win-btn:hover{transform:scale(1.04);}
+  #confetti-canvas{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    pointer-events:none;z-index:999;display:none;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{0%,100%{box-shadow:0 4px 15px rgba(231,84,128,0.4)}50%{box-shadow:0 4px 30px rgba(231,84,128,0.7)}}
+  @keyframes heartbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  .heart-anim{display:inline-block;animation:heartbeat 0.8s ease-in-out infinite;}
+</style>
 </head>
 <body>
+<canvas id="confetti-canvas"></canvas>
+<div id="title-screen">
+  <h1>🦕 DINO<br>LOVE RUN</h1>
+  <p>A tiny game made with ❤️ for you</p>
+  <button id="start-btn" onclick="startGame()">PRESS START ▶</button>
+</div>
+<div id="game-wrapper">
+  <div id="hud">
+    <div id="score-display">HI 00000 &nbsp; 00000</div>
+    <div id="encourage-box">You've got this! 💕</div>
+  </div>
+  <canvas id="game-canvas" width="800" height="300"></canvas>
+  <div id="progress-wrap"><div id="progress-fill"></div></div>
+  <div id="hint-text">Press SPACE or ↑ to jump  •  ↓ to duck</div>
+</div>
+<div id="win-screen">
+  <div id="win-date">6-14-26</div>
+  <div id="win-msg">Happy Monthsary<br>My Love <span class="heart-anim">❤️</span></div>
+  <div id="endless-btn-wrap"></div>
+</div>
 
-    <div id="quiz">
-        <h1>Do you love me?</h1>
-        <div class="buttons">
-            <button id="yesBtn">Yes</button>
-            <button id="noBtn">No</button>
-        </div>
-    </div>
+<script>
+// ─────────────────────────────────────────────────────
+//  PIXEL SIZE
+// ─────────────────────────────────────────────────────
+const S = 4;
 
-    <div id="result" class="hidden">
-        <div class="celebration-container">
-            <!-- Updated reliable GIF link -->
-            <img src="https://media.tenor.com/FPvJW5NgP9cAAAAj/happy-cat-cat.gif" alt="Clapping Dog" class="dog-gif">
-            <h1 id="celebration-text">Happy monthsary baby!!! ❤️✨</h1>
-        </div>
-    </div>
+//                0000000000111 1
+//                0123456789012 3
+const RUN1 = [
+  "00000000011111 0",// placeholder — defined below as strings
+];
 
-    <script>
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-        const quiz = document.getElementById('quiz');
-        const result = document.getElementById('result');
+const R1 = [
+//  t t b b b b b b n h h s   (t=tail, b=body, n=neck, h=head, s=snout)
+  "00000001111111",// 0  back/top of head
+  "00000011111111",// 1  head upper
+  "00000111110111",// 2  eye row — col6='0' is eye socket (surrounded by 1s)
+  "00000011111111",// 3  lower head
+  "00000001111110",// 4  jaw / chin
+  "00000001111000",// 5  neck
+  "00000011111000",// 6  neck-shoulder
+  "00001111111100",// 7  upper body
+  "00011111111100",// 8  body
+  "01111111111100",// 9  body + tail
+  "11111111111000",// 10 body wide
+  "01111111110000",// 11 lower body
+  "00111111110000",// 12 hip area
+  "00011111110000",// 13 hip taper
+  "00001100110000",// 14 legs split — left leg col4-5, right leg col8-9
+  "00001100110000",// 15
+  "00001100110000",// 16
+  "00001100110000",// 17
+  "00011100110000",// 18 left foot wider
+  "00000000000000",// 19
+];
 
-        let yesSize = 1.2; 
-        let paddingY = 15;
-        let paddingX = 30;
+// RUN2 — alternate leg pose
+const R2 = [
+  "00000001111111",
+  "00000011111111",
+  "00000111110111",
+  "00000011111111",
+  "00000001111110",
+  "00000001111000",
+  "00000011111000",
+  "00001111111100",
+  "00011111111100",
+  "01111111111100",
+  "11111111111000",
+  "01111111110000",
+  "00111111100000",
+  "00011111110000",
+  "00001100110000",
+  "00001100110000",
+  "00001100110000",
+  "00001100110000",
+  "00001100011100",// right foot wider
+  "00000000000000",
+];
 
-        const phrases = [
-            "Are you sure?", "Really?", "Think again!", 
-            "Pwease? 🥺", "Wrong button! ❌", "Look at the big red one!"
-        ];
+// DUCK1 — crouched, head still on right
+const D1 = [
+  "00000000000000",
+  "00000000000000",
+  "00000000000000",
+  "00000001111111",
+  "00000011111111",
+  "00000111110111",// eye row 5 col6
+  "00000011111111",
+  "00000001111110",
+  "00000001111100",
+  "00001111111110",// body crouched / longer
+  "00011111111110",
+  "01111111111110",
+  "11111111111100",
+  "01111111111000",
+  "00111111110000",
+  "00001100110000",
+  "00001100110000",
+  "00011100110000",
+  "00000000000000",
+  "00000000000000",
+];
 
-        noBtn.addEventListener('click', () => {
-            yesSize += 0.6;
-            paddingY += 15;
-            paddingX += 30;
+const D2 = [
+  "00000000000000",
+  "00000000000000",
+  "00000000000000",
+  "00000001111111",
+  "00000011111111",
+  "00000111110111",
+  "00000011111111",
+  "00000001111110",
+  "00000001111100",
+  "00001111111110",
+  "00011111111110",
+  "01111111111110",
+  "11111111111100",
+  "01111111111000",
+  "00111111110000",
+  "00001100110000",
+  "00001100110000",
+  "00001100011100",
+  "00000000000000",
+  "00000000000000",
+];
 
-            yesBtn.style.fontSize = yesSize + "rem";
-            yesBtn.style.padding = `${paddingY}px ${paddingX}px`;
+// Eye position in each grid:
+//  RUN/RUN2: row 2, col 6  (the single '0' flanked by '1's)
+//  DUCK1/2:  row 5, col 6
+const EYE_CELLS = new Set(['2,6','5,6']);
 
-            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-            noBtn.innerText = randomPhrase;
-            
-            noBtn.style.transform = `scale(${Math.max(0.5, 1 - (yesSize/10))})`;
-        });
+/* ── CACTUS 12×24 ── */
+const CACTUS=[
+ "000110000000","000110000000","100110001000","111110011100",
+ "011111111100","001111111000","000110111000","000110010000",
+ "000110000000","000110000000","000110000000","000110000000",
+ "000110000000","000110000000","000110000000","000110000000",
+ "000110000000","000110000000","000110000000","000110000000",
+ "011111100000","011111100000","011111100000","000000000000",
+];
+const BIRDA=["0000111100000000","0001111110000000","0011111111000000","0111111111100000","1111111111111000","0001111111000000","0000011100000000","0000001000000000","0000000000000000","0000000000000000"];
+const BIRDB=["0000000000000000","0000000000000000","0111111111100000","1111111111111000","0111111111111000","0001111111100000","0000011100000000","0000001000000000","0000000000000000","0000000000000000"];
 
-        yesBtn.addEventListener('click', () => {
-            quiz.classList.add('hidden');
-            result.classList.remove('hidden');
-            document.body.style.backgroundColor = "#ffb3c1";
-        });
-    </script>
+function bakeSprite(grid, fill, eyeCol) {
+  const rows=grid.length, cols=grid[0].length;
+  const oc=document.createElement('canvas');
+  oc.width=cols*S; oc.height=rows*S;
+  const ox=oc.getContext('2d');
+  ox.imageSmoothingEnabled=false;
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      if(grid[r][c]==='1'){
+        ox.fillStyle=fill;
+        ox.fillRect(c*S,r*S,S,S);
+      } else if(EYE_CELLS.has(r+','+c)){
+        // paint eye only if surrounded horizontally by body pixels
+        const lft=c>0      && grid[r][c-1]==='1';
+        const rgt=c<cols-1 && grid[r][c+1]==='1';
+        if(lft && rgt){
+          ox.fillStyle=eyeCol;
+          ox.fillRect(c*S,r*S,S,S);
+        }
+      }
+    }
+  }
+  return oc;
+}
+
+const DINO_COLOR='#FF69B4', DINO_FLASH='#FFD6E7', EYE_COLOR='#ffffff';
+const CACT_COLOR='#C75BAB', BIRD_COLOR='#E75480';
+
+let SPR={};
+function buildSprites(){
+  SPR.r1 =bakeSprite(R1, DINO_COLOR, EYE_COLOR);
+  SPR.r2 =bakeSprite(R2, DINO_COLOR, EYE_COLOR);
+  SPR.d1 =bakeSprite(D1, DINO_COLOR, EYE_COLOR);
+  SPR.d2 =bakeSprite(D2, DINO_COLOR, EYE_COLOR);
+  SPR.f1 =bakeSprite(R1, DINO_FLASH, EYE_COLOR);
+  SPR.f2 =bakeSprite(R2, DINO_FLASH, EYE_COLOR);
+  SPR.fd1=bakeSprite(D1, DINO_FLASH, EYE_COLOR);
+  SPR.fd2=bakeSprite(D2, DINO_FLASH, EYE_COLOR);
+  SPR.cactus=bakeSprite(CACTUS,CACT_COLOR,'#000');
+  SPR.ba=bakeSprite(BIRDA,BIRD_COLOR,'#000');
+  SPR.bb=bakeSprite(BIRDB,BIRD_COLOR,'#000');
+}
+
+// ─────────────────────────────────────────────────────
+//  CONSTANTS
+// ─────────────────────────────────────────────────────
+const TARGET_SCORE=61426, WIN_SECONDS=74;
+const SCORE_PER_SEC=TARGET_SCORE/WIN_SECONDS;
+
+const ENCOURAGE_MSGS=[
+  "You're amazing! 💕","Keep going, you got this! 🌸","So proud of you! ✨",
+  "You're doing great! 🦋","Almost there, my love! 💖","Run run run! 🎀",
+  "You're my hero! 🌷","So graceful! 💗","Incredible! Keep it up! 🍀",
+  "You make everything beautiful! 💝","Unstoppable! 🌺","My favorite person! 💞",
+  "Look at you go! 🌸","I love you so much! ❤️","The cutest runner! 🎀",
+  "Flying like a butterfly! 🦋","I'm cheering for you! 📣💕",
+  "You're so strong! 💪🌸","Best dino ever! 🦕💖","Just a little more! ✨",
+];
+
+// ─────────────────────────────────────────────────────
+//  CANVAS
+// ─────────────────────────────────────────────────────
+const canvas=document.getElementById('game-canvas');
+const ctx=canvas.getContext('2d');
+ctx.imageSmoothingEnabled=false;
+
+const DINO_COLS=14, DINO_ROWS=20;
+const DINO_PX_W=DINO_COLS*S;  // 56
+const DINO_PX_H=DINO_ROWS*S;  // 80
+const GROUND_Y=canvas.height-55;
+
+// Physics — enough air time to clear double cactus
+const GRAVITY=1700;
+const JUMP_VEL=-720;
+const DINO_X=80;
+
+// ─────────────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────────────
+let mode='story', score=0, hiScore=0;
+let gameRunning=false, won=false;
+let runProgress=0, lastTime=0;
+let encTimer=2, obstacles=[], clouds=[];
+let obstTimer=0, cloudTimer=0, gameSpeed=420, groundOffset=0;
+let duckHeld=false, hitFlash=0;
+let dino={x:DINO_X,y:0,vy:0,onGround:true,ducking:false,frame:0,frameTimer:0};
+
+function resetDino(){
+  dino.y=GROUND_Y-DINO_PX_H; dino.vy=0;
+  dino.onGround=true; dino.ducking=false;
+  dino.frame=0; dino.frameTimer=0; hitFlash=0;
+}
+
+// ─────────────────────────────────────────────────────
+//  HITBOXES  — tightened so legs don't ghost-collide
+//
+//  The dino sprite is 14×20 @ S=4 → 56×80 px
+//  The legs occupy cols 4-9 (of 14), rows 14-18
+//  Body/head occupy cols 5-13, rows 0-13
+//
+//  We use a SINGLE box that covers the widest body area
+//  but deliberately EXCLUDES the bottom-left corner where
+//  the legs are thin/empty, cutting 10px from each side
+//  and 8px from the bottom.
+// ─────────────────────────────────────────────────────
+function dinoHB(){
+  if(dino.ducking){
+    // duck content starts at row 3 → top offset = 3*S = 12
+    const topOff=12, botOff=8;
+    const ty=dino.y+topOff;
+    return{x:dino.x+6, y:ty, w:DINO_PX_W-12, h:DINO_PX_H-topOff-botOff};
+  }
+  // standing: trim sides and bottom generously
+  return{x:dino.x+8, y:dino.y+4, w:DINO_PX_W-14, h:DINO_PX_H-12};
+}
+
+function cactusHB(o){
+  // cactus sprite: 12 cols × 24 rows @ S=3 (baked at S=4 here)
+  const ch=23*S, cw=12*S;
+  // trim 1 pixel each side, and raise bottom slightly
+  return{x:o.x+S+2, y:GROUND_Y-ch+S, w:cw-S*2-4, h:ch-S};
+}
+
+function birdHB(o){
+  return{x:o.x+S*2, y:o.y+S*2, w:16*S-S*5, h:10*S-S*3};
+}
+
+function overlap(a,b){
+  return a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y;
+}
+function checkHit(){
+  const dh=dinoHB();
+  for(let o of obstacles)
+    if(overlap(dh, o.type==='cactus'?cactusHB(o):birdHB(o))) return true;
+  return false;
+}
+
+// ─────────────────────────────────────────────────────
+//  SPAWN  — double cacti have a wide gap so they're clearable
+// ─────────────────────────────────────────────────────
+function spawnObs(){
+  if(Math.random()<0.70){
+    const double=Math.random()<0.30; // 30% chance double
+    obstacles.push({type:'cactus',x:canvas.width});
+    // Gap of 72px between the two — wide enough to land between if needed,
+    // and the jump arc comfortably clears both at once
+    if(double) obstacles.push({type:'cactus',x:canvas.width+72});
+  } else {
+    const by=Math.random()<0.5?GROUND_Y-72:GROUND_Y-38;
+    obstacles.push({type:'bird',x:canvas.width,y:by,frame:0,ft:0});
+  }
+}
+
+// ─────────────────────────────────────────────────────
+//  INPUT
+// ─────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(!gameRunning)return;
+  if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(dino.onGround){dino.vy=JUMP_VEL;dino.onGround=false;}}
+  if(e.code==='ArrowDown'){e.preventDefault();duckHeld=true;}
+});
+document.addEventListener('keyup',e=>{if(e.code==='ArrowDown')duckHeld=false;});
+canvas.addEventListener('touchstart',e=>{e.preventDefault();if(!gameRunning)return;if(dino.onGround){dino.vy=JUMP_VEL;dino.onGround=false;}},{passive:false});
+canvas.addEventListener('touchend',()=>{duckHeld=false;},{passive:false});
+
+// ─────────────────────────────────────────────────────
+//  HUD
+// ─────────────────────────────────────────────────────
+function updateHUD(){
+  const s=Math.floor(score);
+  if(s>hiScore)hiScore=s;
+  document.getElementById('score-display').textContent=
+    `HI ${String(Math.min(hiScore,99999)).padStart(5,'0')}   ${String(Math.min(s,99999)).padStart(5,'0')}`;
+  if(mode==='story')
+    document.getElementById('progress-fill').style.width=Math.min(runProgress/WIN_SECONDS*100,100)+'%';
+}
+function updateEnc(dt){
+  if(mode==='endless')return;
+  encTimer-=dt;
+  if(encTimer<=0){
+    encTimer=3+Math.random()*2;
+    const el=document.getElementById('encourage-box');
+    el.style.opacity='0';
+    setTimeout(()=>{el.textContent=ENCOURAGE_MSGS[Math.floor(Math.random()*ENCOURAGE_MSGS.length)];el.style.opacity='1';},300);
+  }
+}
+
+// ─────────────────────────────────────────────────────
+//  DRAW — debug hitbox toggle (set true to see boxes)
+// ─────────────────────────────────────────────────────
+const DEBUG_HB=false;
+function draw(){
+  ctx.fillStyle='#FFF8FB';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  clouds.forEach(c=>{
+    ctx.fillStyle='#FFD6E7';
+    ctx.fillRect(c.x+10,c.y+10,30,14);
+    ctx.fillRect(c.x,c.y+16,50,10);
+    ctx.fillRect(c.x+8,c.y+4,20,16);
+    ctx.fillRect(c.x+24,c.y,18,14);
+  });
+
+  ctx.fillStyle='#E8A0BF';
+  ctx.fillRect(0,GROUND_Y,canvas.width,3);
+  ctx.fillStyle='rgba(232,160,191,0.45)';
+  for(let i=0;i<canvas.width+18;i+=18)
+    ctx.fillRect((i-groundOffset%18),GROUND_Y+5,8,2);
+
+  obstacles.forEach(o=>{
+    if(o.type==='cactus') ctx.drawImage(SPR.cactus,o.x,GROUND_Y-SPR.cactus.height);
+    else ctx.drawImage(o.frame===0?SPR.ba:SPR.bb,o.x,o.y);
+    if(DEBUG_HB){
+      const h=o.type==='cactus'?cactusHB(o):birdHB(o);
+      ctx.strokeStyle='blue';ctx.lineWidth=1;
+      ctx.strokeRect(h.x,h.y,h.w,h.h);
+    }
+  });
+
+  const fl=hitFlash>0;
+  const spr=dino.ducking
+    ? (fl?(dino.frame?SPR.fd2:SPR.fd1):(dino.frame?SPR.d2:SPR.d1))
+    : (fl?(dino.frame?SPR.f2:SPR.f1):(dino.frame?SPR.r2:SPR.r1));
+  ctx.drawImage(spr,dino.x,dino.y);
+
+  if(DEBUG_HB){
+    const h=dinoHB();
+    ctx.strokeStyle='red';ctx.lineWidth=1;
+    ctx.strokeRect(h.x,h.y,h.w,h.h);
+  }
+}
+
+// ─────────────────────────────────────────────────────
+//  HIT RESET — score + progress bar both snap to 0
+// ─────────────────────────────────────────────────────
+let hitRestarting=false;
+function doHitReset(){
+  hitFlash=0.6; hitRestarting=true;
+  runProgress=0; score=0;
+  const pf=document.getElementById('progress-fill');
+  pf.style.transition='none'; pf.style.width='0%';
+  setTimeout(()=>pf.style.transition='width 0.3s linear',50);
+  setTimeout(()=>{obstacles=[];obstTimer=1.2;resetDino();hitRestarting=false;},500);
+}
+
+// ─────────────────────────────────────────────────────
+//  MAIN LOOP
+// ─────────────────────────────────────────────────────
+function loop(ts){
+  if(!gameRunning)return;
+  const dt=Math.min((ts-lastTime)/1000,0.05);
+  lastTime=ts;
+
+  if(mode==='story'){
+    runProgress+=dt;
+    score=runProgress*SCORE_PER_SEC;
+    if(runProgress>=WIN_SECONDS&&!won){triggerWin();return;}
+  } else {
+    score+=dt*(gameSpeed/8);
+  }
+
+  updateEnc(dt); updateHUD();
+  gameSpeed=mode==='endless'?420+score*0.045:420+(runProgress/WIN_SECONDS)*220;
+
+  dino.ducking=duckHeld&&dino.onGround;
+  dino.vy+=GRAVITY*dt;
+  dino.y+=dino.vy*dt;
+  const floorY=GROUND_Y-DINO_PX_H;
+  if(dino.y>=floorY){dino.y=floorY;dino.vy=0;dino.onGround=true;}
+
+  if(dino.onGround){
+    dino.frameTimer+=dt;
+    if(dino.frameTimer>0.14){dino.frame^=1;dino.frameTimer=0;}
+  } else dino.frame=0;
+
+  obstTimer-=dt;
+  if(obstTimer<=0){
+    spawnObs();
+    const minI=mode==='story'?1.1:0.65;
+    obstTimer=Math.max(minI,1.9-(gameSpeed-420)*0.0015)+Math.random()*0.5;
+  }
+  obstacles.forEach(o=>{
+    o.x-=gameSpeed*dt;
+    if(o.type==='bird'){o.ft+=dt;if(o.ft>0.22){o.frame^=1;o.ft=0;}}
+  });
+  obstacles=obstacles.filter(o=>o.x>-150);
+
+  cloudTimer-=dt;
+  if(cloudTimer<=0){clouds.push({x:canvas.width+10,y:30+Math.random()*80});cloudTimer=2+Math.random()*3;}
+  clouds.forEach(c=>c.x-=80*dt);
+  clouds=clouds.filter(c=>c.x>-80);
+
+  groundOffset+=gameSpeed*dt;
+  if(hitFlash>0)hitFlash-=dt;
+
+  if(!hitRestarting&&checkHit()){
+    if(mode==='story'){
+      doHitReset();
+    } else {
+      gameRunning=false;
+      ctx.fillStyle='rgba(255,244,248,0.92)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle='#E75480';
+      ctx.font='bold 28px "Press Start 2P",monospace';
+      ctx.textAlign='center';
+      ctx.fillText('GAME OVER',canvas.width/2,canvas.height/2-16);
+      ctx.font='12px "Press Start 2P",monospace';
+      ctx.fillText('SPACE / TAP to restart',canvas.width/2,canvas.height/2+20);
+      const onKey=e=>{if(e.code==='Space'||e.code==='ArrowUp'){document.removeEventListener('keydown',onKey);canvas.removeEventListener('touchstart',onTouch);restartEndless();}};
+      const onTouch=()=>{document.removeEventListener('keydown',onKey);canvas.removeEventListener('touchstart',onTouch);restartEndless();};
+      document.addEventListener('keydown',onKey);
+      canvas.addEventListener('touchstart',onTouch);
+      return;
+    }
+  }
+
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// ─────────────────────────────────────────────────────
+//  WIN + CONFETTI
+// ─────────────────────────────────────────────────────
+function triggerWin(){
+  won=true;gameRunning=false;
+  score=TARGET_SCORE;if(score>hiScore)hiScore=score;updateHUD();
+  document.getElementById('game-wrapper').style.display='none';
+  document.getElementById('win-screen').style.display='flex';
+  document.getElementById('endless-btn-wrap').innerHTML=`<button class="win-btn" onclick="startEndless()">▶ ENDLESS MODE</button>`;
+  startConfetti();
+}
+const cc=document.getElementById('confetti-canvas'),cx=cc.getContext('2d');
+let cp=[];
+function startConfetti(){
+  cc.width=window.innerWidth;cc.height=window.innerHeight;cc.style.display='block';cp=[];
+  const cols=['#FF69B4','#FFB6C1','#FF1493','#FFD6E7','#E75480','#fff','#FF4D79'];
+  for(let i=0;i<180;i++) cp.push({x:Math.random()*cc.width,y:Math.random()*cc.height-cc.height,r:4+Math.random()*9,c:cols[Math.floor(Math.random()*cols.length)],vx:-2+Math.random()*4,vy:2+Math.random()*4,rot:Math.random()*360,rs:-3+Math.random()*6,heart:Math.random()<0.4});
+  animC();
+}
+function hPath(px,py,r){cx.beginPath();cx.moveTo(px,py+r*0.3);cx.bezierCurveTo(px,py,px-r,py,px-r,py-r*0.4);cx.bezierCurveTo(px-r,py-r,px,py-r,px,py-r*0.5);cx.bezierCurveTo(px,py-r,px+r,py-r,px+r,py-r*0.4);cx.bezierCurveTo(px+r,py,px,py,px,py+r*0.3);cx.closePath();}
+function animC(){
+  cx.clearRect(0,0,cc.width,cc.height);let alive=false;
+  cp.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.rs;if(p.y<cc.height+20)alive=true;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot*Math.PI/180);cx.fillStyle=p.c;if(p.heart){hPath(0,0,p.r*0.6);cx.fill();}else cx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.5);cx.restore();});
+  if(alive)requestAnimationFrame(animC);else cc.style.display='none';
+}
+
+// ─────────────────────────────────────────────────────
+//  START / RESTART
+// ─────────────────────────────────────────────────────
+function startGame(){
+  buildSprites();
+  mode='story';score=0;runProgress=0;won=false;
+  obstacles=[];clouds=[];obstTimer=1.6;cloudTimer=1;
+  encTimer=2;gameSpeed=420;groundOffset=0;duckHeld=false;hitRestarting=false;
+  resetDino();
+  document.getElementById('title-screen').style.display='none';
+  document.getElementById('win-screen').style.display='none';
+  document.getElementById('game-wrapper').style.display='flex';
+  document.getElementById('encourage-box').style.display='block';
+  document.getElementById('progress-wrap').style.display='block';
+  document.getElementById('encourage-box').textContent="You've got this! 💕";
+  document.getElementById('progress-fill').style.width='0%';
+  gameRunning=true;lastTime=performance.now();
+  requestAnimationFrame(loop);
+}
+function startEndless(){
+  mode='endless';score=0;runProgress=0;
+  obstacles=[];clouds=[];obstTimer=1.4;cloudTimer=1;
+  gameSpeed=420;groundOffset=0;duckHeld=false;hitRestarting=false;
+  resetDino();
+  document.getElementById('win-screen').style.display='none';
+  document.getElementById('game-wrapper').style.display='flex';
+  document.getElementById('encourage-box').style.display='none';
+  document.getElementById('progress-wrap').style.display='none';
+  gameRunning=true;lastTime=performance.now();
+  requestAnimationFrame(loop);
+}
+function restartEndless(){
+  score=0;runProgress=0;obstacles=[];clouds=[];obstTimer=1.4;cloudTimer=1;
+  gameSpeed=420;groundOffset=0;duckHeld=false;hitRestarting=false;
+  resetDino();gameRunning=true;lastTime=performance.now();
+  requestAnimationFrame(loop);
+}
+</script>
 </body>
 </html>
